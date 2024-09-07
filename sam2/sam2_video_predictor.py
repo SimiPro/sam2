@@ -108,7 +108,7 @@ class SAM2VideoPredictor(SAM2Base):
         self._get_image_feature(inference_state, frame_idx=0, batch_size=1)
         return inference_state
 
-        @torch.inference_mode()
+    @torch.inference_mode()
     def init_state(
         self,
         video_path,
