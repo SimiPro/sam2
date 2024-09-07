@@ -238,6 +238,7 @@ def load_video_frames(
 
 def load_video_frames_sorted_frames(
     frame_names,
+    folder_path,
     image_size,
     offload_video_to_cpu,
     img_mean=(0.485, 0.456, 0.406),
@@ -255,8 +256,8 @@ def load_video_frames_sorted_frames(
     """
     num_frames = len(frame_names)
     if num_frames == 0:
-        raise RuntimeError(f"no images found in {jpg_folder}")
-    img_paths = [os.path.join(jpg_folder, frame_name) for frame_name in frame_names]
+        raise RuntimeError(f"no images found in {folder_path}")
+    img_paths = [os.path.join(folder_path, frame_name) for frame_name in frame_names]
     img_mean = torch.tensor(img_mean, dtype=torch.float32)[:, None, None]
     img_std = torch.tensor(img_std, dtype=torch.float32)[:, None, None]
 
@@ -320,7 +321,7 @@ def load_video_frames(
         if os.path.splitext(p)[-1] in [".jpg", ".jpeg", ".JPG", ".JPEG"]
     ]
     frame_names.sort(key=lambda p: int(os.path.splitext(p)[0]))
-    return load_video_frames_sorted_frames(frame_names, image_size, offload_video_to_cpu, img_mean, img_std, async_loading_frames, compute_device)
+    return load_video_frames_sorted_frames(frame_names, jpg_folder, image_size, offload_video_to_cpu, img_mean, img_std, async_loading_frames, compute_device)
 
 def fill_holes_in_mask_scores(mask, max_area):
     """
