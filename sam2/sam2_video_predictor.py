@@ -37,17 +37,19 @@ class SAM2VideoPredictor(SAM2Base):
         self.clear_non_cond_mem_for_multi_obj = clear_non_cond_mem_for_multi_obj
 
     @torch.inference_mode()
-    def init_state(
+    def init_state_from_sorted_frames(
         self,
-        video_path,
+        frames_sorted,
+        image_dir,
         offload_video_to_cpu=False,
         offload_state_to_cpu=False,
         async_loading_frames=False,
     ):
         """Initialize an inference state."""
         compute_device = self.device  # device of the model
-        images, video_height, video_width = load_video_frames(
-            video_path=video_path,
+        images, video_height, video_width = load_video_frames_sorted_frames(
+            frames_sorted,
+            image_dir,
             image_size=self.image_size,
             offload_video_to_cpu=offload_video_to_cpu,
             async_loading_frames=async_loading_frames,
@@ -105,6 +107,16 @@ class SAM2VideoPredictor(SAM2Base):
         # Warm up the visual backbone and cache the image feature on frame 0
         self._get_image_feature(inference_state, frame_idx=0, batch_size=1)
         return inference_state
+
+        @torch.inference_mode()
+    def init_state(
+        self,
+        video_path,
+        offload_video_to_cpu=False,
+        offload_state_to_cpu=False,
+        async_loading_frames=False,
+    ):
+
 
     @classmethod
     def from_pretrained(cls, model_id: str, **kwargs) -> "SAM2VideoPredictor":
